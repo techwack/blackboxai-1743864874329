@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal | Warm Hug</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="firebase.js"></script>
+    <script src="auth.js"></script>
+    <style>
+        .prompt-card {
+            transition: all 0.3s ease;
+        }
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        #journalEntry {
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-light text-gray-800 mb-1">Journal Space</h1>
+            <p class="text-gray-500">Write freely, or use one of our gentle prompts</p>
+        </header>
+
+        <div class="max-w-3xl mx-auto">
+            <!-- Prompt Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" id="promptsContainer">
+                <!-- Prompts will be loaded here by journal.js -->
+                <div class="text-center py-8">
+                    <div class="animate-pulse">
+                        <i class="fas fa-spinner fa-spin text-gray-400 text-2xl mb-2"></i>
+                        <p class="text-gray-500">Loading thoughtful prompts...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journal Entry -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="mb-4">
+                    <label for="journalEntry" class="block text-sm font-medium text-gray-700 mb-2">Your Journal Entry</label>
+                    <textarea id="journalEntry" rows="8" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200" placeholder="Write whatever comes to mind..."></textarea>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button id="newPromptBtn" class="text-pink-500 hover:text-pink-700 text-sm">
+                        <i class="fas fa-sync-alt mr-1"></i> New Prompt
+                    </button>
+                    <button id="saveEntryBtn" class="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        <i class="fas fa-save mr-2"></i> Save Entry
+                    </button>
+                </div>
+            </div>
+
+            <!-- Previous Entries -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h2 class="text-lg font-medium text-gray-700 mb-4">Your Previous Entries</h2>
+                <div id="entriesContainer">
+                    <!-- Entries will be loaded here by journal.js -->
+                    <p class="text-gray-500 text-center py-4">No entries yet. Your thoughts are safe here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="journal.js"></script>
+</body>
+</html>
