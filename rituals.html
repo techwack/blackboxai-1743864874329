@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relaxation Rituals | Warm Hug</title>
+    <!-- Shared dependencies from index.html -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .ritual-card {
+            transition: all 0.2s ease;
+        }
+        .ritual-card:hover {
+            transform: translateY(-3px);
+        }
+        .ritual-card.active {
+            border-color: #4ECDC4;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .breathing-circle {
+            animation: pulse 8s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(0.9); }
+        }
+        .progress-bar {
+            transition: width 1s linear;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- Navigation -->
+    <div id="nav-container"></div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-dark mb-6">
+                <i class="fas fa-spa text-accent mr-2"></i> Relaxation Rituals
+            </h1>
+            <p class="text-gray-600 mb-8">
+                Take a moment to recenter and find peace with these calming exercises and music.
+            </p>
+
+            <!-- Ritual Selection -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" id="rituals-container">
+                <!-- Ritual cards will be loaded from gemini-rituals.js -->
+            </div>
+
+            <!-- Active Ritual Display -->
+            <div id="active-ritual-container" class="hidden bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 id="active-ritual-title" class="text-xl font-semibold text-dark"></h2>
+                    <button id="close-ritual" class="text-gray-500 hover:text-dark">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="ritual-content" class="p-6">
+                    <!-- Content will be loaded based on selected ritual -->
+                </div>
+            </div>
+
+            <!-- Music Player -->
+            <div class="mt-12">
+                <h2 class="text-2xl font-bold text-dark mb-4">
+                    <i class="fas fa-music text-accent mr-2"></i> Calming Sounds
+                </h2>
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-medium text-dark">Ambient Soundscapes</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4" id="music-container">
+                        <!-- Music tracks will be loaded from gemini-rituals.js -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { auth } from './auth.js';
+        import { initRituals } from './gemini-rituals.js';
+        
+        // Load shared components
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('nav-container').innerHTML = html;
+            });
+
+        // Initialize rituals
+        auth.onAuthStateChanged((user) => {
+            initRituals(user);
+        });
+    </script>
+</body>
+</html>
