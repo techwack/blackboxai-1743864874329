@@ -4,78 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mood Check-In | Warm Hug</title>
+    <!-- Shared dependencies from index.html -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="firebase.js"></script>
-    <script src="auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .mood-option {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            transform: scale(1);
         }
         .mood-option:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
-        .mood-selected {
-            transform: scale(1.15);
-            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+        .mood-option.selected {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .color-picker {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        .color-picker.selected {
+            outline: 3px solid #292F36;
+            outline-offset: 2px;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-12">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-light text-gray-800 mb-1">How are you feeling?</h1>
-            <p class="text-gray-500">Choose a color or emoji that matches your mood</p>
-        </header>
+<body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- Navigation -->
+    <div id="nav-container"></div>
 
-        <div class="max-w-md mx-auto bg-white rounded-xl shadow-sm p-6">
-            <!-- Color Mood Selector -->
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <h1 class="text-3xl font-bold text-dark mb-6 text-center">
+                <i class="fas fa-smile-beam text-accent mr-2"></i> How are you feeling today?
+            </h1>
+            
+            <!-- Mood Selection -->
             <div class="mb-8">
-                <h2 class="text-lg font-medium text-gray-700 mb-4">Color Mood</h2>
-                <div class="grid grid-cols-5 gap-3">
-                    <div class="mood-option h-12 rounded-full bg-red-100 cursor-pointer" data-mood="red"></div>
-                    <div class="mood-option h-12 rounded-full bg-orange-100 cursor-pointer" data-mood="orange"></div>
-                    <div class="mood-option h-12 rounded-full bg-yellow-100 cursor-pointer" data-mood="yellow"></div>
-                    <div class="mood-option h-12 rounded-full bg-green-100 cursor-pointer" data-mood="green"></div>
-                    <div class="mood-option h-12 rounded-full bg-blue-100 cursor-pointer" data-mood="blue"></div>
-                    <div class="mood-option h-12 rounded-full bg-indigo-100 cursor-pointer" data-mood="indigo"></div>
-                    <div class="mood-option h-12 rounded-full bg-purple-100 cursor-pointer" data-mood="purple"></div>
-                    <div class="mood-option h-12 rounded-full bg-pink-100 cursor-pointer" data-mood="pink"></div>
-                    <div class="mood-option h-12 rounded-full bg-gray-100 cursor-pointer" data-mood="gray"></div>
-                    <div class="mood-option h-12 rounded-full bg-white border border-gray-200 cursor-pointer" data-mood="white"></div>
+                <h2 class="text-xl font-semibold text-dark mb-4">Select your mood</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                    <!-- Mood options will be populated by mood.js -->
+                    <div id="mood-options-container"></div>
                 </div>
             </div>
 
-            <!-- Emoji Mood Selector -->
+            <!-- Color Selection -->
             <div class="mb-8">
-                <h2 class="text-lg font-medium text-gray-700 mb-4">Emoji Mood</h2>
-                <div class="grid grid-cols-5 gap-3 text-2xl">
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😊">😊</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😢">😢</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😡">😡</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😴">😴</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😃">😃</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😔">😔</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😌">😌</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😕">😕</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😍">😍</div>
-                    <div class="mood-option p-2 rounded-lg cursor-pointer text-center" data-mood="😐">😐</div>
+                <h2 class="text-xl font-semibold text-dark mb-4">Or pick a color that matches your mood</h2>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <!-- Color options will be populated by mood.js -->
+                    <div id="color-options-container"></div>
                 </div>
             </div>
 
-            <!-- Optional Note -->
-            <div class="mb-6">
-                <label for="moodNote" class="block text-sm font-medium text-gray-700 mb-2">Add a note (optional)</label>
-                <textarea id="moodNote" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200" placeholder="What's on your mind?"></textarea>
+            <!-- Notes Section -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-dark mb-4">Add some notes (optional)</h2>
+                <textarea 
+                    id="mood-notes" 
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-accent focus:border-transparent" 
+                    rows="4" 
+                    placeholder="What's contributing to how you feel today?"></textarea>
             </div>
 
             <!-- Submit Button -->
-            <button id="submitMood" class="w-full bg-pink-500 text-white py-3 px-4 rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300 disabled:opacity-50" disabled>
-                <i class="fas fa-heart mr-2"></i> Save My Mood
-            </button>
-        </div>
-    </div>
+            <div class="text-center">
+                <button 
+                    id="submit-mood" 
+                    class="bg-accent hover:bg-accent-dark text-white font-bold py-3 px-8 rounded-full text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    <i class="far fa-save mr-2"></i> Save My Mood
+                </button>
+            </div>
 
-    <script src="mood.js"></script>
+            <!-- Mood History -->
+            <div class="mt-12">
+                <h2 class="text-xl font-semibold text-dark mb-4">Your Recent Moods</h2>
+                <div id="mood-history" class="space-y-4">
+                    <!-- Mood history will be populated by mood.js -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { auth, showToast } from './auth.js';
+        import { initMoodTracking } from './mood.js';
+        
+        // Load shared components
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('nav-container').innerHTML = html;
+            });
+
+        // Initialize mood tracking
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                initMoodTracking(user);
+            } else {
+                showToast('Please sign in to track your mood', 'info');
+            }
+        });
+    </script>
 </body>
 </html>
