@@ -1,0 +1,122 @@
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="index.html" class="text-2xl font-extrabold text-dark px-4 py-2 hover:bg-gray-100 rounded-lg transition">
+                    <i class="fas fa-heart text-primary mr-2"></i> Warm Hug
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a href="mood-checkin.html" class="nav-link" data-page="mood-checkin">
+                        <i class="fas fa-smile mr-2"></i> Mood
+                    </a>
+                    <a href="journal.html" class="nav-link" data-page="journal">
+                        <i class="fas fa-book-open mr-2"></i> Journal
+                    </a>
+                    <a href="chat.html" class="nav-link" data-page="chat">
+                        <i class="fas fa-comments mr-2"></i> Chat
+                    </a>
+                    <a href="rituals.html" class="nav-link" data-page="rituals">
+                        <i class="fas fa-spa mr-2"></i> Rituals
+                    </a>
+                </div>
+            </div>
+
+            <!-- Auth Controls -->
+            <div class="hidden md:block">
+                <div class="ml-4 flex items-center md:ml-6">
+                    <div id="auth-controls">
+                        <!-- Will be populated by auth.js -->
+                        <button id="signInButton" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-dark focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="mood-checkin.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium" data-page="mood-checkin">
+                <i class="fas fa-smile mr-2"></i> Mood Check-In
+            </a>
+            <a href="journal.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium" data-page="journal">
+                <i class="fas fa-book-open mr-2"></i> Journal
+            </a>
+            <a href="chat.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium" data-page="chat">
+                <i class="fas fa-comments mr-2"></i> Chat Companion
+            </a>
+            <a href="rituals.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium" data-page="rituals">
+                <i class="fas fa-spa mr-2"></i> Relaxation Rituals
+            </a>
+            <div class="pt-4 border-t border-gray-200">
+                <div id="mobile-auth-controls" class="px-3 py-2">
+                    <!-- Will be populated by auth.js -->
+                    <button class="w-full bg-primary text-white px-4 py-2 rounded-md text-base font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Highlight current page in navigation
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+        if (currentPage === '') return; // Skip for index page
+        
+        // Desktop links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.dataset.page === currentPage) {
+                link.classList.add('text-primary', 'font-bold');
+                link.classList.remove('text-gray-600', 'hover:text-dark');
+            } else {
+                link.classList.add('text-gray-600', 'hover:text-dark');
+            }
+        });
+
+        // Mobile links
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            if (link.dataset.page === currentPage) {
+                link.classList.add('bg-primary/10', 'text-primary');
+                link.classList.remove('text-gray-600', 'hover:bg-gray-50');
+            } else {
+                link.classList.add('text-gray-600', 'hover:bg-gray-50');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    });
+</script>
+
+<style>
+    .nav-link {
+        @apply px-3 py-2 rounded-md text-sm font-medium transition-colors;
+    }
+    .mobile-nav-link {
+        @apply px-3 py-2 rounded-md text-base font-medium transition-colors;
+    }
+</style>
