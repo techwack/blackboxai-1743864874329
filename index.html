@@ -3,51 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warm Hug | A comforting companion</title>
+    <title>Warm Hug | Comforting Companion</title>
+    <meta name="description" content="A comforting digital experience with mood tracking, journaling, and relaxation tools">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#292F36',
+                        light: '#F7FFF7'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Styles -->
     <style>
-        .bg-soft-gradient {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
-        .btn-primary {
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .loading-spinner.active {
+            display: flex;
         }
     </style>
 </head>
-<body class="bg-soft-gradient min-h-screen">
-    <div class="container mx-auto px-4 py-12">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-light text-gray-800 mb-2">Warm Hug</h1>
-            <p class="text-lg text-gray-600">A warm hug, whenever you want, wherever you are</p>
-        </header>
-
-        <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
-            <div id="auth-container">
-                <!-- Auth forms will be injected here by firebase.js -->
-                <div class="text-center py-8">
-                    <div class="animate-pulse">
-                        <i class="fas fa-heart text-pink-400 text-4xl mb-4"></i>
-                        <p class="text-gray-500">Loading warm comforts...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="mt-12 text-center text-gray-500 text-sm">
-            <p>No diagnosis. No ads. Just care.</p>
-            <p class="mt-2">Your privacy is protected.</p>
-        </footer>
+<body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-accent"></div>
     </div>
 
-    <script src="firebase.js"></script>
-    <script src="auth.js"></script>
+    <!-- Navigation -->
+    <div id="nav-container"></div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-dark mb-4">Welcome to Warm Hug</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Your comforting digital companion for mood tracking, journaling, and relaxation
+            </p>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Mood Check-In Card -->
+            <a href="mood-checkin.html" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark mb-2">Mood Check-In</h2>
+                    <p class="text-gray-600">Track your daily emotions and patterns</p>
+                </div>
+            </a>
+
+            <!-- Journal Card -->
+            <a href="journal.html" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark mb-2">Journal</h2>
+                    <p class="text-gray-600">Express your thoughts freely or with prompts</p>
+                </div>
+            </a>
+
+            <!-- Chat Companion Card -->
+            <a href="chat.html" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark mb-2">Chat Companion</h2>
+                    <p class="text-gray-600">Talk with a supportive AI companion</p>
+                </div>
+            </a>
+
+            <!-- Rituals Card -->
+            <a href="rituals.html" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-dark mb-2">Relaxation Rituals</h2>
+                    <p class="text-gray-600">Calming exercises and music for stress relief</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2023 Warm Hug. All rights reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-accent transition"><i class="fab fa-github"></i></a>
+                <a href="#" class="hover:text-accent transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-accent transition"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Initialization -->
+    <script type="module">
+        // Show loading spinner
+        document.getElementById('loadingSpinner').classList.add('active');
+
+        // Import Firebase config
+        import { auth } from './firebase.js';
+
+        // Load navigation
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('nav-container').innerHTML = html;
+            });
+
+        // Check auth state
+        auth.onAuthStateChanged((user) => {
+            // Hide loading spinner when everything is ready
+            document.getElementById('loadingSpinner').classList.remove('active');
+            
+            if (user) {
+                console.log('User is signed in:', user);
+            } else {
+                console.log('No user signed in');
+            }
+        });
+    </script>
 </body>
 </html>
