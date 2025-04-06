@@ -4,70 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal | Warm Hug</title>
+    <!-- Shared dependencies from index.html -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="firebase.js"></script>
-    <script src="auth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .prompt-card {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .prompt-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        #journalEntry {
+        .prompt-card.selected {
+            border-color: #4ECDC4;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        #journal-entry {
             min-height: 200px;
+        }
+        .entry-card {
+            border-left: 4px solid;
+            transition: all 0.2s ease;
+        }
+        .entry-card:hover {
+            transform: translateX(2px);
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-12">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-light text-gray-800 mb-1">Journal Space</h1>
-            <p class="text-gray-500">Write freely, or use one of our gentle prompts</p>
-        </header>
+<body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- Navigation -->
+    <div id="nav-container"></div>
 
-        <div class="max-w-3xl mx-auto">
-            <!-- Prompt Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" id="promptsContainer">
-                <!-- Prompts will be loaded here by journal.js -->
-                <div class="text-center py-8">
-                    <div class="animate-pulse">
-                        <i class="fas fa-spinner fa-spin text-gray-400 text-2xl mb-2"></i>
-                        <p class="text-gray-500">Loading thoughtful prompts...</p>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-dark mb-6">
+                <i class="fas fa-book-open text-accent mr-2"></i> Your Journal
+            </h1>
+
+            <!-- Journal Mode Toggle -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex justify-center space-x-4">
+                    <button id="free-write-btn" class="journal-mode-btn active px-4 py-2 rounded-full font-medium">
+                        <i class="fas fa-pen-fancy mr-2"></i> Free Write
+                    </button>
+                    <button id="prompted-write-btn" class="journal-mode-btn px-4 py-2 rounded-full font-medium">
+                        <i class="fas fa-lightbulb mr-2"></i> Use a Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Free Write Section -->
+            <div id="free-write-section" class="journal-section">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-dark">
+                            <i class="fas fa-pen-fancy text-accent mr-2"></i> Free Writing
+                        </h2>
+                    </div>
+                    <textarea 
+                        id="journal-entry" 
+                        class="w-full px-4 py-3 focus:outline-none" 
+                        rows="10" 
+                        placeholder="Write whatever is on your mind..."></textarea>
+                    <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+                        <div class="text-sm text-gray-500" id="word-count">0 words</div>
+                        <button id="save-entry" class="bg-accent hover:bg-accent-dark text-white font-bold py-2 px-6 rounded-full transition">
+                            <i class="far fa-save mr-2"></i> Save Entry
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Journal Entry -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <div class="mb-4">
-                    <label for="journalEntry" class="block text-sm font-medium text-gray-700 mb-2">Your Journal Entry</label>
-                    <textarea id="journalEntry" rows="8" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200" placeholder="Write whatever comes to mind..."></textarea>
+            <!-- Prompted Write Section -->
+            <div id="prompted-write-section" class="journal-section hidden">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-dark">
+                            <i class="fas fa-lightbulb text-accent mr-2"></i> Journal Prompts
+                        </h2>
+                        <p class="text-gray-600 text-sm mt-1">Select a prompt to get started</p>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4" id="prompts-container">
+                        <!-- Prompts will be loaded from journal.js -->
+                    </div>
                 </div>
 
-                <div class="flex justify-between items-center">
-                    <button id="newPromptBtn" class="text-pink-500 hover:text-pink-700 text-sm">
-                        <i class="fas fa-sync-alt mr-1"></i> New Prompt
-                    </button>
-                    <button id="saveEntryBtn" class="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300">
-                        <i class="fas fa-save mr-2"></i> Save Entry
-                    </button>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6 hidden" id="prompted-entry-container">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-medium text-dark" id="selected-prompt-text"></h3>
+                    </div>
+                    <textarea 
+                        id="prompted-journal-entry" 
+                        class="w-full px-4 py-3 focus:outline-none" 
+                        rows="10" 
+                        placeholder="Write your response to the prompt..."></textarea>
+                    <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+                        <button id="back-to-prompts" class="text-gray-600 hover:text-dark transition">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to prompts
+                        </button>
+                        <button id="save-prompted-entry" class="bg-accent hover:bg-accent-dark text-white font-bold py-2 px-6 rounded-full transition">
+                            <i class="far fa-save mr-2"></i> Save Entry
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Previous Entries -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h2 class="text-lg font-medium text-gray-700 mb-4">Your Previous Entries</h2>
-                <div id="entriesContainer">
-                    <!-- Entries will be loaded here by journal.js -->
-                    <p class="text-gray-500 text-center py-4">No entries yet. Your thoughts are safe here.</p>
+            <!-- Journal History -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold text-dark mb-4">
+                    <i class="fas fa-history text-accent mr-2"></i> Your Journal History
+                </h2>
+                <div id="journal-history" class="space-y-4">
+                    <!-- Entries will be loaded from journal.js -->
+                    <p class="text-gray-500">Your journal entries will appear here</p>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script src="journal.js"></script>
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { auth } from './auth.js';
+        import { initJournal } from './journal.js';
+        
+        // Load shared components
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('nav-container').innerHTML = html;
+            });
+
+        // Initialize journal
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                initJournal(user);
+            }
+        });
+    </script>
 </body>
 </html>
